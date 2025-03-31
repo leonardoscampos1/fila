@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fila de Atendimento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="title-container">
+            <h1>Fila de Atendimento</h1>
+            <h2>Gerenciamento de Vendedores</h2>
+            <button id="adicionarVendedor">Adicionar Vendedor</button>
+        </div>
+        <div class="logo">
+            <img src="https://media.licdn.com/dms/image/v2/D4D0BAQGhMizQN5w8ZQ/company-logo_200_200/company-logo_200_200/0/1707315978557/grupo_rigarr_logo?e=2147483647&v=beta&t=MHONE08jEOKDSjPjKNDW5-NIhRoJts6jmSTn2Uwr3RQ" alt="Logo">
+        </div>
+    </div>
+    <div class="fila">
+        <div class="coluna" id="sp">
+            <h2>São Paulo</h2>
+        </div>
+        <div class="coluna" id="mg">
+            <h2>Minas Gerais</h2>
+        </div>
+        <div class="coluna" id="rj">
+            <h2>Rio de Janeiro</h2>
+        </div>
+        <div class="reserva">
+            <h2>Reserva</h2>
+        </div>
+    </div>
+    <div id="modal" class="modal">
+        <div class="modal-conteudo">
+            <span class="fechar">&times;</span>
+            <h2>Adicionar/Editar Vendedor</h2>
+            <form id="formularioVendedor">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome">
+                <label for="cod">Código:</label>
+                <input type="text" id="cod" name="cod">
+                <label for="coluna">Coluna:</label>
+                <select id="coluna" name="coluna">
+                    <option value="sp">São Paulo</option>
+                    <option value="mg">Minas Gerais</option>
+                    <option value="rj">Rio de Janeiro</option>
+                </select>
+                <input type="hidden" id="indiceVendedor" name="indiceVendedor">
+                <button type="submit">Salvar</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
