@@ -21,7 +21,11 @@ const colunas = document.querySelectorAll('.coluna');
 const reserva = document.querySelector('.reserva');
 let arrastando = null;
 
-let vendedores = {}; // Inicializado vazio e preenchido com dados do Firebase
+let vendedores = {
+    sp: [],
+    mg: [],
+    rj: []
+}; // Inicialize com arrays vazios para evitar erros
 
 function criarCard(vendedor, colunaId, indice) {
     const card = document.createElement('div');
@@ -39,15 +43,14 @@ function criarCard(vendedor, colunaId, indice) {
 function renderizarVendedores() {
     colunas.forEach(coluna => {
         coluna.innerHTML = `<h2>${coluna.id.toUpperCase()}</h2>`;
-        if(vendedores[coluna.id]){
-           vendedores[coluna.id].forEach((vendedor, indice) => {
-               coluna.appendChild(criarCard(vendedor, coluna.id, indice));
-           });
+        if (vendedores[coluna.id]) {
+            vendedores[coluna.id].forEach((vendedor, indice) => {
+                coluna.appendChild(criarCard(vendedor, coluna.id, indice));
+            });
         }
-
     });
     adicionarEventosCards();
-    set(ref(database, 'vendedores/'), vendedores);
+    salvarVendedores(); // Chame salvarVendedores aqui
 }
 
 function configurarArrasto(elemento) {
@@ -108,6 +111,10 @@ function adicionarEventosCards() {
     });
 }
 
+function salvarVendedores() {
+    set(ref(database, 'vendedores/'), vendedores);
+}
+
 const vendedoresRef = ref(database, 'vendedores/');
 onValue(vendedoresRef, (snapshot) => {
     const data = snapshot.val();
@@ -115,12 +122,7 @@ onValue(vendedoresRef, (snapshot) => {
         vendedores = data;
         renderizarVendedores();
     } else {
-        vendedores = {
-            sp: [],
-            mg: [],
-            rj: []
-        };
-        renderizarVendedores();
+        renderizarVendedores(); // Garante que a interface é renderizada mesmo se não houver dados
     }
 });
 
