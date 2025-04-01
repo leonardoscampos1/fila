@@ -1,21 +1,27 @@
+// script.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBNqhZfb7AOrqCEYQdueiSvWZpG2Vrf6Pg",
+    authDomain: "fila-de-atendimento-94218.firebaseapp.com",
+    databaseURL: "https://fila-de-atendimento-94218-default-rtdb.firebaseio.com",
+    projectId: "fila-de-atendimento-94218",
+    storageBucket: "fila-de-atendimento-94218.firebasestorage.app",
+    messagingSenderId: "556297277758",
+    appId: "1:556297277758:web:a07d009367b5a85342dc6f",
+    measurementId: "G-7CJPF52D8Z"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
 const colunas = document.querySelectorAll('.coluna');
 const reserva = document.querySelector('.reserva');
 let arrastando = null;
 
-let vendedores = {
-    sp: [
-        { nome: 'João', cod: 'SP001' },
-        { nome: 'Maria', cod: 'SP002' }
-    ],
-    mg: [
-        { nome: 'Carlos', cod: 'MG001' },
-        { nome: 'Ana', cod: 'MG002' }
-    ],
-    rj: [
-        { nome: 'Pedro', cod: 'RJ001' },
-        { nome: 'Sofia', cod: 'RJ002' }
-    ]
-};
+let vendedores = {}; // Inicializado vazio e preenchido com dados do Firebase
 
 function criarCard(vendedor, colunaId, indice) {
     const card = document.createElement('div');
@@ -33,11 +39,15 @@ function criarCard(vendedor, colunaId, indice) {
 function renderizarVendedores() {
     colunas.forEach(coluna => {
         coluna.innerHTML = `<h2>${coluna.id.toUpperCase()}</h2>`;
-        vendedores[coluna.id].forEach((vendedor, indice) => {
-            coluna.appendChild(criarCard(vendedor, coluna.id, indice));
-        });
+        if(vendedores[coluna.id]){
+           vendedores[coluna.id].forEach((vendedor, indice) => {
+               coluna.appendChild(criarCard(vendedor, coluna.id, indice));
+           });
+        }
+
     });
     adicionarEventosCards();
+    set(ref(database, 'vendedores/'), vendedores);
 }
 
 function configurarArrasto(elemento) {
@@ -98,7 +108,22 @@ function adicionarEventosCards() {
     });
 }
 
-renderizarVendedores();
+const vendedoresRef = ref(database, 'vendedores/');
+onValue(vendedoresRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+        vendedores = data;
+        renderizarVendedores();
+    } else {
+        vendedores = {
+            sp: [],
+            mg: [],
+            rj: []
+        };
+        renderizarVendedores();
+    }
+});
+
 colunas.forEach(coluna => configurarArrasto(coluna));
 configurarArrasto(reserva);
 
