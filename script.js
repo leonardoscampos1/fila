@@ -25,7 +25,7 @@ let vendedores = {
     sp: [],
     mg: [],
     rj: []
-}; // Inicialize com arrays vazios para evitar erros
+};
 
 function criarCard(vendedor, colunaId, indice) {
     const card = document.createElement('div');
@@ -50,7 +50,7 @@ function renderizarVendedores() {
         }
     });
     adicionarEventosCards();
-    salvarVendedores(); // Chame salvarVendedores aqui
+    set(ref(database, 'vendedores/'), vendedores);
 }
 
 function configurarArrasto(elemento) {
@@ -111,10 +111,6 @@ function adicionarEventosCards() {
     });
 }
 
-function salvarVendedores() {
-    set(ref(database, 'vendedores/'), vendedores);
-}
-
 const vendedoresRef = ref(database, 'vendedores/');
 onValue(vendedoresRef, (snapshot) => {
     const data = snapshot.val();
@@ -122,7 +118,7 @@ onValue(vendedoresRef, (snapshot) => {
         vendedores = data;
         renderizarVendedores();
     } else {
-        renderizarVendedores(); // Garante que a interface é renderizada mesmo se não houver dados
+        renderizarVendedores();
     }
 });
 
@@ -157,6 +153,9 @@ formularioVendedor.addEventListener('submit', e => {
     const coluna = document.getElementById('coluna').value;
     const indiceVendedor = document.getElementById('indiceVendedor').value;
 
+    if (!vendedores[coluna]) {
+        vendedores[coluna] = [];
+    }
     if (indiceVendedor === '') {
         vendedores[coluna].push({ nome, cod });
     } else {
